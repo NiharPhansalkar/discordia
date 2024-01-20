@@ -24,6 +24,10 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FileUpload from "@/components/file-upload";
 
+import { useRouter } from "next/navigation";
+
+import axios from "axios";
+
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required",
@@ -33,8 +37,9 @@ const formSchema = z.object({
   }),
 });
 
-export const InitialModel = () => {
+const InitialModel = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -51,7 +56,15 @@ export const InitialModel = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      await axios.post("/api/servers", values);
+
+      form.reset();
+      router.refresh();
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (!isMounted) {
@@ -81,6 +94,7 @@ export const InitialModel = () => {
                     <FormItem>
                       <FormControl>
                         <FileUpload
+                          key={field.value}
                           endpoint="serverImage"
                           value={field.value}
                           onChange={field.onChange}
@@ -122,3 +136,5 @@ export const InitialModel = () => {
     </Dialog>
   );
 };
+
+export default InitialModel;
