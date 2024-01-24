@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { open_sans } from "./fonts";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import ModelProvider from "@/components/providers/model-provider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,6 +29,7 @@ export default function RootLayout({
             storageKey="discord-theme"
             disableTransitionOnChange
           >
+            <ModelProvider />
             {children}
           </ThemeProvider>
         </body>
